@@ -1,18 +1,23 @@
 const PORT = 2998;
 const express = require('express');
-const https = require('https');
 const fs = require('fs');
 const app = express();
 const axios = require('axios').default;
-const options = {
-    key: fs.readFileSync('../privkey.pem'),
-    cert: fs.readFileSync('../cert.pem'),
-    ca: fs.readFileSync('../fullchain.pem')
-};
+
+// HTTPS Setting
+// const https = require('https');
+// const options = {
+//     key: fs.readFileSync('../privkey.pem'),
+//     cert: fs.readFileSync('../cert.pem'),
+//     ca: fs.readFileSync('../fullchain.pem')
+// };
+
+// https.createServer(options, app).listen(PORT);
+app.listen(PORT); // only http
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-https.createServer(options, app).listen(PORT);
 app.get('/login', function (req, res) {
     res.sendFile(__dirname + "/public/login.html");
 });
