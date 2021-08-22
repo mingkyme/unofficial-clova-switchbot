@@ -22,8 +22,8 @@ app.get('/login', function (req, res) {
     res.sendFile(__dirname + "/public/login.html");
 });
 app.post('/fulfillment', function (req, res) {
-    // let command = req.body.header.name;
-    // let token = req.body.payload.accessToken;
+    let command = req.body.header.name;
+    //let token = req.body.payload.accessToken;
     switch (command) {
         case "DiscoverAppliancesRequest":
             DiscoverAppliancesRequest(req, res);
