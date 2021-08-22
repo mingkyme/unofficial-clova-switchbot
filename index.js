@@ -13,10 +13,10 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.get('/');
 https.createServer(options, app).listen(PORT);
-app.get('/clova/login', function (req, res) {
+app.get('/login', function (req, res) {
     res.sendFile(__dirname + "/public/login.html");
 });
-app.post('/clova/fulfillment', function (req, res) {
+app.post('/fulfillment', function (req, res) {
     let command = req.body.header.name;
     let token = req.body.payload.accessToken;
     switch (command) {
@@ -35,7 +35,7 @@ app.post('/clova/fulfillment', function (req, res) {
     }
 });
 
-app.post('/clova/login', function (req, res) {
+app.post('/login', function (req, res) {
     // let response_type = req.body.response_type;
     // let client_id = req.body.client_id;
     // let scope = req.body.scope;
@@ -48,7 +48,7 @@ app.post('/clova/login', function (req, res) {
     console.log(url);
     res.redirect(url);
 });
-app.post('/clova/token', function (req, res) {
+app.post('/token', function (req, res) {
     console.log('post');
     console.log(req.body);
     res.send(
