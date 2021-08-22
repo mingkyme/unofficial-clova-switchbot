@@ -1,4 +1,4 @@
-const PORT = 3000;
+const PORT = 2998;
 const express = require('express');
 const https = require('https');
 const fs = require('fs');
@@ -11,14 +11,14 @@ const options = {
 };
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.get('/');
+
 https.createServer(options, app).listen(PORT);
 app.get('/login', function (req, res) {
     res.sendFile(__dirname + "/public/login.html");
 });
 app.post('/fulfillment', function (req, res) {
-    let command = req.body.header.name;
-    let token = req.body.payload.accessToken;
+    // let command = req.body.header.name;
+    // let token = req.body.payload.accessToken;
     switch (command) {
         case "DiscoverAppliancesRequest":
             DiscoverAppliancesRequest(req, res);
@@ -41,16 +41,12 @@ app.post('/login', function (req, res) {
     // let scope = req.body.scope;
     let redirect_uri = req.body.redirect_uri;
     let state = req.body.state;
-
     let token = req.body.token;
 
     let url = decodeURIComponent(redirect_uri) + "?state=" + state + "&code=" + token + "&token_type=Bearer";
-    console.log(url);
     res.redirect(url);
 });
 app.post('/token', function (req, res) {
-    console.log('post');
-    console.log(req.body);
     res.send(
         {
             "access_token": req.body.code
