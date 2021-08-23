@@ -34,6 +34,12 @@ app.post('/fulfillment', function (req, res) {
         case "TurnOffRequest":
             TurnOffRequest(req, res);
             break;
+        case "GetCurrentTemperatureRequest":
+            GetCurrentTemperatureRequest(req,res);
+            break;
+        case "GetHumidityRequest":
+            GetHumidityRequest(req,res);
+            break;
         default:
             res.sendStatus(403);
             break;
@@ -83,11 +89,12 @@ function DiscoverAppliancesRequest(req, res) {
             resultObject.header = new Object();
             resultObject.header.messageId = req.body.header.messageId;
             resultObject.header.name = "unofficial-clova-switchbot";
-            resultObject.header.namespace = "unofficial-clova-switchbot",
-                resultObject.header.payloadVersion = "1.0"
+            resultObject.header.namespace = "unofficial-clova-switchbot";
+            resultObject.header.payloadVersion = "1.0";
             resultObject.payload = new Object();
             resultObject.payload.discoveredAppliances = new Array();
 
+            // Switchbot
             for (let i = 0; i < bots.length; i++) {
                 let bot = new Object();
                 bot.applianceId = bots[i].deviceId;
@@ -99,6 +106,20 @@ function DiscoverAppliancesRequest(req, res) {
                 bot.applianceTypes = ["SWITCH"];
                 resultObject.payload.discoveredAppliances.push(bot);
             }
+
+            // Meter
+            for (let i = 0; i < meters.length; i++) {
+                let meter = new Object();
+                meter.applianceId = meters[i].deviceId;
+                meter.manufacturerName = "switchbot";
+                meter.modelName = "meter";
+                meter.friendlyName = meters[i].deviceName;
+                meter.isIr = false;
+                meter.actions = ["GetCurrentTemperature", "GetHumidity"];
+                meter.applianceTypes = ["AIRSENSOR"];
+                resultObject.payload.discoveredAppliances.push(meter);
+            }
+
             res.send(resultObject);
         })
         .catch(function (error) {
@@ -144,4 +165,49 @@ function TurnOffRequest(req, res) {
 
         });
 
+}
+
+// TODO: 검증 필요
+function GetCurrentTemperatureRequest(req,res){
+    let token = req.body.payload.accessToken;
+    let applianceId = req.body.payload.appliance.applianceId;
+    axios.get('https://api.switch-bot.com/v1.0/devices/'+applianceId+'/status',{ headers: { 'Authorization': token } })
+    .then(function(response){
+        // response.data.body.temperature
+        let resultObject = new Object();
+        resultObject.header = new Object();
+        resultObject.header.messageId = req.body.header.messageId;
+        resultObject.header.name = "GetCurrentTemperatureResponse";
+        resultObject.header.payloadVersion = "1.0";
+        resultObject.payload = new Object();
+        resultObject.payload.currentTemperature = new Object();
+        resultObject.payload.currentTemperature.value = response.data.body.temperature;
+        res.send(resultObject);
+    })
+    .catch(function(error){
+        console.log(error);
+        res.sendStatus(403);
+    });
+}
+// TODO: 검증 필요
+function GetHumidityRequest(req,res){
+    let token = req.body.payload.accessToken;
+    let applianceId = req.body.payload.appliance.applianceId;
+    axios.get('https://api.switch-bot.com/v1.0/devices/'+applianceId+'/status',{ headers: { 'Authorization': token } })
+    .then(function(response){
+        // response.data.body.humidity
+        let resultObject = new Object();
+        resultObject.header = new Object();
+        resultObject.header.messageId = req.body.header.messageId;
+        resultObject.header.name = "GetHumidityResponse";
+        resultObject.header.payloadVersion = "1.0";
+        resultObject.payload = new Object();
+        resultObject.payload.humidity = new Object();
+        resultObject.payload.humidity.value = response.data.body.humidity;
+        res.send(resultObject);
+    })
+    .catch(function(error){
+        console.log(error);
+        res.sendStatus(403);
+    });   
 }
