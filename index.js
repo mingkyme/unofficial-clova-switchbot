@@ -167,7 +167,6 @@ function TurnOffRequest(req, res) {
 
 }
 
-// TODO: 검증 필요
 function GetCurrentTemperatureRequest(req,res){
     let token = req.body.payload.accessToken;
     let applianceId = req.body.payload.appliance.applianceId;
@@ -189,7 +188,6 @@ function GetCurrentTemperatureRequest(req,res){
         res.sendStatus(403);
     });
 }
-// TODO: 검증 필요
 function GetHumidityRequest(req,res){
     let token = req.body.payload.accessToken;
     let applianceId = req.body.payload.appliance.applianceId;
