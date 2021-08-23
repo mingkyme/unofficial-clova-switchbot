@@ -62,7 +62,23 @@ function DiscoverAppliancesRequest(req, res) {
     let token = req.body.payload.accessToken;
     axios.get('https://api.switch-bot.com/v1.0/devices', { headers: { 'Authorization': token } })
         .then(function (response) {
-            let bots = response.data.body.deviceList.filter(x => x.deviceType == 'Bot');
+            // Switchbot devices
+            let devices = response.data.body.deviceList;
+            let bots = devices.filter(x => x.deviceType == 'Bot');
+            let meters = devices.filter(x => x.deviceType == 'Meter');
+
+            // IR Devices
+            let irDevices = response.data.body.infraredRemoteList;
+            // TODO: IR Air Conditioner
+            // let airConditioners = irDevices.filter(x => x.remoteType == 'Air Conditioner');
+            // TODO: IR TV
+            // let airConditioners = irDevices.filter(x => x.remoteType == 'TV');
+            // TODO: IR Air Purifier
+            // let airConditioners = irDevices.filter(x => x.remoteType == 'Air Purifier');
+            // TODO: IR Fan
+            // let airConditioners = irDevices.filter(x => x.remoteType == 'Fan');
+
+
             let resultObject = new Object();
             resultObject.header = new Object();
             resultObject.header.messageId = req.body.header.messageId;
