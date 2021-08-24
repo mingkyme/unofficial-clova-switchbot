@@ -75,15 +75,14 @@ function DiscoverAppliancesRequest(req, res) {
 
             // IR Devices
             let irDevices = response.data.body.infraredRemoteList;
-            // TODO: IR Air Conditioner
-            // let airConditioners = irDevices.filter(x => x.remoteType == 'Air Conditioner');
-            // TODO: IR TV
-            // let tvs = irDevices.filter(x => x.remoteType == ' DIY TV');
-            // TODO: IR Air Purifier
-            // let airPurifiers = irDevices.filter(x => x.remoteType == 'DIY Air Purifier');
-            // TODO: IR Fan
+            // IR Air Conditioner
+            let airConditioners = irDevices.filter(x => x.remoteType == 'Air Conditioner');
+            // IR TV
+            let tvs = irDevices.filter(x => x.remoteType == ' DIY TV');
+            // IR Air Purifier
+            let airPurifiers = irDevices.filter(x => x.remoteType == 'DIY Air Purifier');
+            // IR Fan
             let fans = irDevices.filter(x => x.remoteType == 'DIY Fan');
-            console.log(irDevices);
 
             let resultObject = new Object();
             resultObject.header = new Object();
@@ -120,6 +119,45 @@ function DiscoverAppliancesRequest(req, res) {
                 resultObject.payload.discoveredAppliances.push(meter);
             }
             
+            // IR Air Conditioner
+            for (let i=0;i<airConditioners.length;i++){
+                let airConditioner = new Object();
+                airConditioner.applianceId = airConditioners[i].deviceId;
+                airConditioner.manufacturerName = "switchbot";
+                airConditioner.modelName = "IR Air Conditioner";
+                airConditioner.friendlyName = airConditioners[i].deviceName;
+                airConditioner.isIr = true;
+                airConditioner.actions = ["TurnOn", "TurnOff",'SetTargetTemperature'];
+                airConditioner.applianceTypes = ["AIRCONDITIONER"];
+                resultObject.payload.discoveredAppliances.push(airConditioner);
+            }
+
+            // IR TV
+            for (let i=0;i<tvs.length;i++){
+                let tv = new Object();
+                tv.applianceId = tvs[i].deviceId;
+                tv.manufacturerName = "switchbot";
+                tv.modelName = "IR TV";
+                tv.friendlyName = tvs[i].deviceName;
+                tv.isIr = true;
+                tv.actions = ["TurnOn", "TurnOff", 'ChangeInputSource', 'DecrementChannel', 'DecrementVolume', 'IncrementChannel', 'IncrementVolume', 'SetChannel', 'Mute'];
+                tv.applianceTypes = ["TV"];
+                resultObject.payload.discoveredAppliances.push(tv);
+            }
+
+           // IR Air Purifier
+            for (let i=0;i<airPurifiers.length;i++){
+                let airPurifier = new Object();
+                airPurifier.applianceId = airPurifiers[i].deviceId;
+                airPurifier.manufacturerName = "switchbot";
+                airPurifier.modelName = "IR Air Purifier";
+                airPurifier.friendlyName = airPurifiers[i].deviceName;
+                airPurifier.isIr = true;
+                airPurifier.actions = ["TurnOn", "TurnOff"];
+                airPurifier.applianceTypes = ["AIRPURIFIER"];
+                resultObject.payload.discoveredAppliances.push(airPurifier);
+            }
+
             // IR Fan
             for (let i=0;i<fans.length;i++){
                 let fan = new Object();
@@ -128,7 +166,7 @@ function DiscoverAppliancesRequest(req, res) {
                 fan.modelName = "IR Fan";
                 fan.friendlyName = fans[i].deviceName;
                 fan.isIr = true;
-                fan.actions = ["TurnOn", "TurnOff"];
+                fan.actions = ["TurnOn", "TurnOff", 'StartOscillation'];
                 fan.applianceTypes = ["FAN"];
                 resultObject.payload.discoveredAppliances.push(fan);
             }
