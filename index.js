@@ -35,10 +35,34 @@ app.post('/fulfillment', function (req, res) {
             TurnOffRequest(req, res);
             break;
         case "GetCurrentTemperatureRequest":
-            GetCurrentTemperatureRequest(req,res);
+            GetCurrentTemperatureRequest(req, res);
             break;
         case "GetHumidityRequest":
-            GetHumidityRequest(req,res);
+            GetHumidityRequest(req, res);
+            break;
+        case "SetTargetTemperatureRequest":
+            SetTargetTemperatureRequest(req, res);
+            break;
+        case "DecrementChannelRequest":
+            DecrementChannelRequest(req, res);
+            break;
+        case "DecrementVolumeRequest":
+            DecrementVolumeRequest(req, res);
+            break;
+        case "IncrementChannelRequest":
+            IncrementChannelRequest(req, res);
+            break;
+        case "IncrementVolumeRequest":
+            IncrementVolumeRequest(req, res);
+            break;
+        case "SetChannelRequest":
+            SetChannelRequest(req, res);
+            break;
+        case "MuteRequest":
+            MuteRequest(req, res);
+            break;
+        case "StartOscillationRequest":
+            StartOscillationRequest(req, res);
             break;
         default:
             res.sendStatus(403);
@@ -118,35 +142,35 @@ function DiscoverAppliancesRequest(req, res) {
                 meter.applianceTypes = ["AIRSENSOR"];
                 resultObject.payload.discoveredAppliances.push(meter);
             }
-            
+
             // IR Air Conditioner
-            for (let i=0;i<airConditioners.length;i++){
+            for (let i = 0; i < airConditioners.length; i++) {
                 let airConditioner = new Object();
                 airConditioner.applianceId = airConditioners[i].deviceId;
                 airConditioner.manufacturerName = "switchbot";
                 airConditioner.modelName = "IR Air Conditioner";
                 airConditioner.friendlyName = airConditioners[i].deviceName;
                 airConditioner.isIr = true;
-                airConditioner.actions = ["TurnOn", "TurnOff",'SetTargetTemperature'];
+                airConditioner.actions = ["TurnOn", "TurnOff", 'SetTargetTemperature'];
                 airConditioner.applianceTypes = ["AIRCONDITIONER"];
                 resultObject.payload.discoveredAppliances.push(airConditioner);
             }
 
             // IR TV
-            for (let i=0;i<tvs.length;i++){
+            for (let i = 0; i < tvs.length; i++) {
                 let tv = new Object();
                 tv.applianceId = tvs[i].deviceId;
                 tv.manufacturerName = "switchbot";
                 tv.modelName = "IR TV";
                 tv.friendlyName = tvs[i].deviceName;
                 tv.isIr = true;
-                tv.actions = ["TurnOn", "TurnOff", 'ChangeInputSource', 'DecrementChannel', 'DecrementVolume', 'IncrementChannel', 'IncrementVolume', 'SetChannel', 'Mute'];
+                tv.actions = ["TurnOn", "TurnOff", 'DecrementChannel', 'DecrementVolume', 'IncrementChannel', 'IncrementVolume', 'SetChannel', 'Mute'];
                 tv.applianceTypes = ["TV"];
                 resultObject.payload.discoveredAppliances.push(tv);
             }
 
-           // IR Air Purifier
-            for (let i=0;i<airPurifiers.length;i++){
+            // IR Air Purifier
+            for (let i = 0; i < airPurifiers.length; i++) {
                 let airPurifier = new Object();
                 airPurifier.applianceId = airPurifiers[i].deviceId;
                 airPurifier.manufacturerName = "switchbot";
@@ -159,7 +183,7 @@ function DiscoverAppliancesRequest(req, res) {
             }
 
             // IR Fan
-            for (let i=0;i<fans.length;i++){
+            for (let i = 0; i < fans.length; i++) {
                 let fan = new Object();
                 fan.applianceId = fans[i].deviceId;
                 fan.manufacturerName = "switchbot";
@@ -217,45 +241,215 @@ function TurnOffRequest(req, res) {
 
 }
 
-function GetCurrentTemperatureRequest(req,res){
+function GetCurrentTemperatureRequest(req, res) {
     let token = req.body.payload.accessToken;
     let applianceId = req.body.payload.appliance.applianceId;
-    axios.get('https://api.switch-bot.com/v1.0/devices/'+applianceId+'/status',{ headers: { 'Authorization': token } })
-    .then(function(response){
-        // response.data.body.temperature
-        let resultObject = new Object();
-        resultObject.header = new Object();
-        resultObject.header.messageId = req.body.header.messageId;
-        resultObject.header.name = "GetCurrentTemperatureResponse";
-        resultObject.header.payloadVersion = "1.0";
-        resultObject.payload = new Object();
-        resultObject.payload.currentTemperature = new Object();
-        resultObject.payload.currentTemperature.value = response.data.body.temperature;
-        res.send(resultObject);
-    })
-    .catch(function(error){
-        console.log(error);
-        res.sendStatus(403);
-    });
+    axios.get('https://api.switch-bot.com/v1.0/devices/' + applianceId + '/status', { headers: { 'Authorization': token } })
+        .then(function (response) {
+            // response.data.body.temperature
+            let resultObject = new Object();
+            resultObject.header = new Object();
+            resultObject.header.messageId = req.body.header.messageId;
+            resultObject.header.name = "GetCurrentTemperatureResponse";
+            resultObject.header.payloadVersion = "1.0";
+            resultObject.payload = new Object();
+            resultObject.payload.currentTemperature = new Object();
+            resultObject.payload.currentTemperature.value = response.data.body.temperature;
+            res.send(resultObject);
+        })
+        .catch(function (error) {
+            console.log(error);
+            res.sendStatus(403);
+        });
 }
-function GetHumidityRequest(req,res){
+function GetHumidityRequest(req, res) {
     let token = req.body.payload.accessToken;
     let applianceId = req.body.payload.appliance.applianceId;
-    axios.get('https://api.switch-bot.com/v1.0/devices/'+applianceId+'/status',{ headers: { 'Authorization': token } })
-    .then(function(response){
-        // response.data.body.humidity
-        let resultObject = new Object();
-        resultObject.header = new Object();
-        resultObject.header.messageId = req.body.header.messageId;
-        resultObject.header.name = "GetHumidityResponse";
-        resultObject.header.payloadVersion = "1.0";
-        resultObject.payload = new Object();
-        resultObject.payload.humidity = new Object();
-        resultObject.payload.humidity.value = response.data.body.humidity;
-        res.send(resultObject);
-    })
-    .catch(function(error){
-        console.log(error);
-        res.sendStatus(403);
-    });   
+    axios.get('https://api.switch-bot.com/v1.0/devices/' + applianceId + '/status', { headers: { 'Authorization': token } })
+        .then(function (response) {
+            // response.data.body.humidity
+            let resultObject = new Object();
+            resultObject.header = new Object();
+            resultObject.header.messageId = req.body.header.messageId;
+            resultObject.header.name = "GetHumidityResponse";
+            resultObject.header.payloadVersion = "1.0";
+            resultObject.payload = new Object();
+            resultObject.payload.humidity = new Object();
+            resultObject.payload.humidity.value = response.data.body.humidity;
+            res.send(resultObject);
+        })
+        .catch(function (error) {
+            console.log(error);
+            res.sendStatus(403);
+        });
+}
+// TODO: EDIT START POINT
+function SetTargetTemperatureRequest(req, res) {
+    // TODO: Number
+    let token = req.body.payload.accessToken;
+    let applianceId = req.body.payload.appliance.applianceId;
+    axios.get('https://api.switch-bot.com/v1.0/devices/' + applianceId + '/status', { headers: { 'Authorization': token } })
+        .then(function (response) {
+            // response.data.body.humidity
+            let resultObject = new Object();
+            resultObject.header = new Object();
+            resultObject.header.messageId = req.body.header.messageId;
+            resultObject.header.name = "GetHumidityResponse";
+            resultObject.header.payloadVersion = "1.0";
+            resultObject.payload = new Object();
+            resultObject.payload.humidity = new Object();
+            resultObject.payload.humidity.value = response.data.body.humidity;
+            res.send(resultObject);
+        })
+        .catch(function (error) {
+            console.log(error);
+            res.sendStatus(403);
+        });
+}
+function DecrementChannelRequest(req, res) {
+    let token = req.body.payload.accessToken;
+    let applianceId = req.body.payload.appliance.applianceId;
+    axios.get('https://api.switch-bot.com/v1.0/devices/' + applianceId + '/status', { headers: { 'Authorization': token } })
+        .then(function (response) {
+            // response.data.body.humidity
+            let resultObject = new Object();
+            resultObject.header = new Object();
+            resultObject.header.messageId = req.body.header.messageId;
+            resultObject.header.name = "GetHumidityResponse";
+            resultObject.header.payloadVersion = "1.0";
+            resultObject.payload = new Object();
+            resultObject.payload.humidity = new Object();
+            resultObject.payload.humidity.value = response.data.body.humidity;
+            res.send(resultObject);
+        })
+        .catch(function (error) {
+            console.log(error);
+            res.sendStatus(403);
+        });
+}
+function DecrementVolumeRequest(req, res) {
+    let token = req.body.payload.accessToken;
+    let applianceId = req.body.payload.appliance.applianceId;
+    axios.get('https://api.switch-bot.com/v1.0/devices/' + applianceId + '/status', { headers: { 'Authorization': token } })
+        .then(function (response) {
+            // response.data.body.humidity
+            let resultObject = new Object();
+            resultObject.header = new Object();
+            resultObject.header.messageId = req.body.header.messageId;
+            resultObject.header.name = "GetHumidityResponse";
+            resultObject.header.payloadVersion = "1.0";
+            resultObject.payload = new Object();
+            resultObject.payload.humidity = new Object();
+            resultObject.payload.humidity.value = response.data.body.humidity;
+            res.send(resultObject);
+        })
+        .catch(function (error) {
+            console.log(error);
+            res.sendStatus(403);
+        });
+}
+function IncrementChannelRequest(req, res) {
+    let token = req.body.payload.accessToken;
+    let applianceId = req.body.payload.appliance.applianceId;
+    axios.get('https://api.switch-bot.com/v1.0/devices/' + applianceId + '/status', { headers: { 'Authorization': token } })
+        .then(function (response) {
+            // response.data.body.humidity
+            let resultObject = new Object();
+            resultObject.header = new Object();
+            resultObject.header.messageId = req.body.header.messageId;
+            resultObject.header.name = "GetHumidityResponse";
+            resultObject.header.payloadVersion = "1.0";
+            resultObject.payload = new Object();
+            resultObject.payload.humidity = new Object();
+            resultObject.payload.humidity.value = response.data.body.humidity;
+            res.send(resultObject);
+        })
+        .catch(function (error) {
+            console.log(error);
+            res.sendStatus(403);
+        });
+}
+function IncrementVolumeRequest(req, res) {
+    let token = req.body.payload.accessToken;
+    let applianceId = req.body.payload.appliance.applianceId;
+    axios.get('https://api.switch-bot.com/v1.0/devices/' + applianceId + '/status', { headers: { 'Authorization': token } })
+        .then(function (response) {
+            // response.data.body.humidity
+            let resultObject = new Object();
+            resultObject.header = new Object();
+            resultObject.header.messageId = req.body.header.messageId;
+            resultObject.header.name = "GetHumidityResponse";
+            resultObject.header.payloadVersion = "1.0";
+            resultObject.payload = new Object();
+            resultObject.payload.humidity = new Object();
+            resultObject.payload.humidity.value = response.data.body.humidity;
+            res.send(resultObject);
+        })
+        .catch(function (error) {
+            console.log(error);
+            res.sendStatus(403);
+        });
+}
+function SetChannelRequest(req, res) {
+    let token = req.body.payload.accessToken;
+    let applianceId = req.body.payload.appliance.applianceId;
+    axios.get('https://api.switch-bot.com/v1.0/devices/' + applianceId + '/status', { headers: { 'Authorization': token } })
+        .then(function (response) {
+            // response.data.body.humidity
+            let resultObject = new Object();
+            resultObject.header = new Object();
+            resultObject.header.messageId = req.body.header.messageId;
+            resultObject.header.name = "GetHumidityResponse";
+            resultObject.header.payloadVersion = "1.0";
+            resultObject.payload = new Object();
+            resultObject.payload.humidity = new Object();
+            resultObject.payload.humidity.value = response.data.body.humidity;
+            res.send(resultObject);
+        })
+        .catch(function (error) {
+            console.log(error);
+            res.sendStatus(403);
+        });
+}
+function MuteRequest(req, res) {
+    let token = req.body.payload.accessToken;
+    let applianceId = req.body.payload.appliance.applianceId;
+    axios.get('https://api.switch-bot.com/v1.0/devices/' + applianceId + '/status', { headers: { 'Authorization': token } })
+        .then(function (response) {
+            // response.data.body.humidity
+            let resultObject = new Object();
+            resultObject.header = new Object();
+            resultObject.header.messageId = req.body.header.messageId;
+            resultObject.header.name = "GetHumidityResponse";
+            resultObject.header.payloadVersion = "1.0";
+            resultObject.payload = new Object();
+            resultObject.payload.humidity = new Object();
+            resultObject.payload.humidity.value = response.data.body.humidity;
+            res.send(resultObject);
+        })
+        .catch(function (error) {
+            console.log(error);
+            res.sendStatus(403);
+        });
+}
+function StartOscillationRequest(req, res) {
+    let token = req.body.payload.accessToken;
+    let applianceId = req.body.payload.appliance.applianceId;
+    axios.get('https://api.switch-bot.com/v1.0/devices/' + applianceId + '/status', { headers: { 'Authorization': token } })
+        .then(function (response) {
+            // response.data.body.humidity
+            let resultObject = new Object();
+            resultObject.header = new Object();
+            resultObject.header.messageId = req.body.header.messageId;
+            resultObject.header.name = "GetHumidityResponse";
+            resultObject.header.payloadVersion = "1.0";
+            resultObject.payload = new Object();
+            resultObject.payload.humidity = new Object();
+            resultObject.payload.humidity.value = response.data.body.humidity;
+            res.send(resultObject);
+        })
+        .catch(function (error) {
+            console.log(error);
+            res.sendStatus(403);
+        });
 }
