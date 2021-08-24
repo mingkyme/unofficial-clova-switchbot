@@ -284,7 +284,7 @@ function SetTargetTemperatureRequest(req, res) {
     let token = req.body.payload.accessToken;
     let applianceId = req.body.payload.appliance.applianceId;
     let wantTemperature = req.body.payload.targetTemperature.value;
-    axios.post('https://api.switch-bot.com/v1.0/devices/' + applianceId + "/commands", { "command": "setAll", "parameter": wantTemperature+",1,1,on", "commandType": "command" }, { headers: { 'Authorization': token } })
+    axios.post('https://api.switch-bot.com/v1.0/devices/' + applianceId + "/commands", { "command": "setAll", "parameter": wantTemperature+",2,4,on", "commandType": "command" }, { headers: { 'Authorization': token } })
         .then(function (response) {
             let resultObject = new Object();
             resultObject.header = new Object();
