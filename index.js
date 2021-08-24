@@ -83,7 +83,7 @@ function DiscoverAppliancesRequest(req, res) {
             // let airPurifiers = irDevices.filter(x => x.remoteType == 'Air Purifier');
             // TODO: IR Fan
             let fans = irDevices.filter(x => x.remoteType == 'Fan');
-
+            console.log(irDevices);
 
             let resultObject = new Object();
             resultObject.header = new Object();
