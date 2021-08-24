@@ -1,19 +1,33 @@
 # unofficial-clova-switchbot
-[비공식] 클로바 스위치봇 연동
+> [비공식] 클로바 스위치봇 연동 코드입니다.
 
-### 지원 기기
+# 지원 기기
 
-##### Switchbot
+## Switchbot devices
+- Switchbot
+  - TurnOn
+  - TurnOff
+- meter
+  - GetCurrentTemperature
+  - GetHumidity
 
-TurnOn, TurnOff
-
-##### Meter
-
-GetCurrentTemperature, GetHumidity
-
-## 추가 예정 기기
-IR 기기 ( TV, 에어컨, 선풍기, 공기청정기)
-1. TV
-2. Air Conditioner
-3. Fan
-4. Air Purifier
+## IR devices
+- TV
+  - TurnOn
+  - TurnOff
+  - IncrementChannel
+  - DecrementChannel
+  - IncrementVolume
+  - DecrementVolume
+  - SetChannel
+- Air Conditioner
+  - TurnOn
+  - TurnOff
+  - SetTargetTemperature
+- Fan
+  - TurnOn
+  - TurnOff
+  - StartOscillation
+- Air Purifier
+  - TurnOn
+  - TurnOff
