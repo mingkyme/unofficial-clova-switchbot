@@ -82,7 +82,7 @@ function DiscoverAppliancesRequest(req, res) {
             // TODO: IR Air Purifier
             // let airPurifiers = irDevices.filter(x => x.remoteType == 'Air Purifier');
             // TODO: IR Fan
-            // let fans = irDevices.filter(x => x.remoteType == 'Fan');
+            let fans = irDevices.filter(x => x.remoteType == 'Fan');
 
 
             let resultObject = new Object();
@@ -119,7 +119,19 @@ function DiscoverAppliancesRequest(req, res) {
                 meter.applianceTypes = ["AIRSENSOR"];
                 resultObject.payload.discoveredAppliances.push(meter);
             }
-
+            
+            // IR Fan
+            for (let i=0;i<fans.length;i++){
+                let fan = new Object();
+                fan.applianceId = fans[i].deviceId;
+                fan.manufacturerName = "switchbot";
+                fan.modelName = "IR Fan";
+                fan.friendlyName = fans[i].deviceName;
+                fan.isIr = true;
+                fan.actions = ["TurnOn", "TurnOff"];
+                fan.applianceTypes = ["FAN"];
+                resultObject.payload.discoveredAppliances.push(fan);
+            }
             res.send(resultObject);
         })
         .catch(function (error) {
