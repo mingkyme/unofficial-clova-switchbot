@@ -162,7 +162,7 @@ function DiscoverAppliancesRequest(req, res) {
                 tv.friendlyName = tvs[i].deviceName;
                 tv.isIr = true;
                 tv.actions = ["TurnOn", "TurnOff", 'DecrementChannel', 'DecrementVolume', 'IncrementChannel', 'IncrementVolume', 'SetChannel'];
-                tv.applianceTypes = ["TV"];
+                tv.applianceTypes = ["SMARTTV"];
                 resultObject.payload.discoveredAppliances.push(tv);
             }
 
