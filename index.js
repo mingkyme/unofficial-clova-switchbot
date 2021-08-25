@@ -99,7 +99,7 @@ function DiscoverAppliancesRequest(req, res) {
             // IR Air Conditioner
             let airConditioners = irDevices.filter(x => x.remoteType == 'Air Conditioner');
             // IR TV
-            let tvs = irDevices.filter(x => x.remoteType == ' DIY TV');
+            let tvs = irDevices.filter(x => x.remoteType == 'DIY TV');
             // IR Air Purifier
             let airPurifiers = irDevices.filter(x => x.remoteType == 'DIY Air Purifier');
             // IR Fan
