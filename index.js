@@ -4,15 +4,6 @@ const fs = require('fs');
 const app = express();
 const axios = require('axios').default;
 
-// HTTPS Setting
-// const https = require('https');
-// const options = {
-//     key: fs.readFileSync('../privkey.pem'),
-//     cert: fs.readFileSync('../cert.pem'),
-//     ca: fs.readFileSync('../fullchain.pem')
-// };
-
-// https.createServer(options, app).listen(PORT);
 app.listen(PORT); // only http
 
 app.use(express.json());
@@ -23,7 +14,6 @@ app.get('/login', function (req, res) {
 });
 app.post('/fulfillment', function (req, res) {
     let command = req.body.header.name;
-    //let token = req.body.payload.accessToken;
     switch (command) {
         case "DiscoverAppliancesRequest":
             DiscoverAppliancesRequest(req, res);
